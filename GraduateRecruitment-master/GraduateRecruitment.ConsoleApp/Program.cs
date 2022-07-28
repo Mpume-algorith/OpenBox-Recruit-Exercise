@@ -65,10 +65,7 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question4(OpenBarRepository repo)
         {
             Console.WriteLine("Question 4: How many Fanta Oranges do we need to order next week?");
-            foreach (var item in repo.FantaOrangeOrder())
-            {
-                Console.WriteLine(item.DateString + ": " + item.QuantityTaken + ": " + item.QuantityAdded + ": " + item.Day);
-            }
+            
             Console.WriteLine("Inventory Usage: " + repo.InventoryUageRate());
             // Write your answer to the console here.
             // Format e.g.  {quanity}
@@ -77,7 +74,7 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question5(OpenBarRepository repo)
         {
             Console.WriteLine("Question 5: How much do we need to budget next month for Ceres Orange Juice?");
-
+            Console.WriteLine(repo.CeresOrangeBudget());
             // Write your answer to the console here.
             // Format e.g.  R{amount}
         }
@@ -85,7 +82,7 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question6(OpenBarRepository repo)
         {
             Console.WriteLine("Question 6: How much do we need to budget for next month to restock the fridge?");
-
+            Console.WriteLine(repo.MonthlyRestockBudget());
             // Write your answer to the console here.
             // Format e.g.  R{amount}
         }

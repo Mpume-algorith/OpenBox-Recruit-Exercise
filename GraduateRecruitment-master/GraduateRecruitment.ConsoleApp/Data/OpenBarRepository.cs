@@ -236,6 +236,81 @@ namespace GraduateRecruitment.ConsoleApp.Data
             return usageRate;
 
         }
+
+        public IList<InventoryRunningOut> SumByDrinkNamePerMonth(int x)
+        {
+            IList<InventoryRunningOut> list = new List<InventoryRunningOut>();
+            var query = (from item1 in _fridgeStockDto
+                         join item2 in _openBarRecordsDto
+                         on item1.OpenBarRecordId equals item2.Id
+                         where item1.InventoryId == x
+                         select new InventoryRunningOut
+                         {
+                             Id = item1.InventoryId,
+                             Date = item2.Date,
+                             QuantityTaken = item1.Quantity.Taken
+                         });
+            var drinkSumByMonth = (from item1 in query
+                                   join item2 in _inventoryDto
+                                   on item1.Id equals item2.Id
+                                   let year = item1.Date.ToString("yyyy")
+                                   let month = item1.Date.ToString("MMMM")
+                                   group item1 by new { year, month } into g
+                                   select new InventoryRunningOut
+                                   {
+                                       DateString = g.Key.year,
+                                       DateStringMonth = g.Key.month,
+                                       QuantityTaken = g.Sum(x => x.QuantityTaken)
+                                   }).ToList();
+            foreach (var item in drinkSumByMonth)
+            {
+                InventoryRunningOut obj = new InventoryRunningOut();
+                obj.DateString = item.DateString;
+                obj.DateStringMonth = item.DateStringMonth;
+                obj.QuantityTaken = item.QuantityTaken;
+                list.Add(obj);
+            }
+            return list;
+
+        }
+        public decimal CeresOrangeBudget()
+        {
+            double consumptionAverage = SumByDrinkNamePerMonth(9).Average(x => x.QuantityTaken);
+            decimal priceOfJuice = GetInventory(9).Price;
+            decimal monthlyBudget = Convert.ToDecimal(consumptionAverage) * priceOfJuice;
+
+            return monthlyBudget;
+        }
+        public decimal MonthlyRestockBudget()
+        {
+            decimal consumptionAverage1 = Convert.ToDecimal(SumByDrinkNamePerMonth(1).Average(x => x.QuantityTaken));
+
+            decimal consumptionAverage2 = Convert.ToDecimal(SumByDrinkNamePerMonth(2).Average(x => x.QuantityTaken));
+            decimal consumptionAverage3 = Convert.ToDecimal(SumByDrinkNamePerMonth(3).Average(x => x.QuantityTaken));
+            decimal consumptionAverage4 = Convert.ToDecimal(SumByDrinkNamePerMonth(4).Average(x => x.QuantityTaken));
+            decimal consumptionAverage5 = Convert.ToDecimal(SumByDrinkNamePerMonth(5).Average(x => x.QuantityTaken));
+            decimal consumptionAverage6 = Convert.ToDecimal(SumByDrinkNamePerMonth(6).Average(x => x.QuantityTaken));
+            decimal consumptionAverage7 = Convert.ToDecimal(SumByDrinkNamePerMonth(7).Average(x => x.QuantityTaken));
+            decimal consumptionAverage8 = Convert.ToDecimal(SumByDrinkNamePerMonth(8).Average(x => x.QuantityTaken));
+            decimal consumptionAverage9 = Convert.ToDecimal(SumByDrinkNamePerMonth(9).Average(x => x.QuantityTaken));
+            decimal consumptionAverage10 = Convert.ToDecimal(SumByDrinkNamePerMonth(10).Average(x => x.QuantityTaken));
+            decimal price1 = GetInventory(1).Price;
+            decimal price2 = GetInventory(2).Price;
+            decimal price3 = GetInventory(3).Price;
+            decimal price4 = GetInventory(4).Price;
+            decimal price5 = GetInventory(5).Price;
+            decimal price6 = GetInventory(6).Price;
+            decimal price7 = GetInventory(7).Price;
+            decimal price8 = GetInventory(8).Price;
+            decimal price9 = GetInventory(9).Price;
+            decimal price10 = GetInventory(10).Price;
+
+            decimal averageMonthlyBudget = (consumptionAverage1 * price1) + (consumptionAverage2 * price2) + (consumptionAverage3 * price3) + (consumptionAverage4 * price4) + (consumptionAverage5 * price5) + (consumptionAverage6 * price6) + (consumptionAverage7 * price7) + (consumptionAverage8 * price8) + (consumptionAverage9 * price9) + (consumptionAverage10 * price10);
+
+
+            return averageMonthlyBudget;
+        }
+
         #endregion
         public OpenBarRepository()
         {
