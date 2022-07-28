@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "r/aN5WX3VNzFdw96iQHFE9+dnVHwHmH5ASdqM6UNxgvIwXzo8kRuP8SfFN6bMHgOfb8gELZncl/1bRYFXFd8OQ==",
+  "dgSpecHash": "yX7sZGPylmj/lcoIzGhVIB0Fel58+o6Cgu/O+GLOUoSuAEdArp7BUBXT8XzV3kpJmBD7OiILbazvCcFcFpmt+w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj",
+  "projectFilePath": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mpumelelotsotsa\\.nuget\\packages\\lumenworks.framework.io.core\\1.0.1\\lumenworks.framework.io.core.1.0.1.nupkg.sha512"
   ],

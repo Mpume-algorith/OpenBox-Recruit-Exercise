@@ -4001,11 +4001,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.Tests\\GraduateRecruitment.UnitTests\\GraduateRecruitment.UnitTests.csproj",
+      "projectUniqueName": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.Tests\\GraduateRecruitment.UnitTests\\GraduateRecruitment.UnitTests.csproj",
       "projectName": "GraduateRecruitment.UnitTests",
-      "projectPath": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.Tests\\GraduateRecruitment.UnitTests\\GraduateRecruitment.UnitTests.csproj",
+      "projectPath": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.Tests\\GraduateRecruitment.UnitTests\\GraduateRecruitment.UnitTests.csproj",
       "packagesPath": "C:\\Users\\mpumelelotsotsa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.Tests\\GraduateRecruitment.UnitTests\\obj\\",
+      "outputPath": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.Tests\\GraduateRecruitment.UnitTests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\mpumelelotsotsa\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -4022,8 +4022,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj": {
-              "projectPath": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj"
+            "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj": {
+              "projectPath": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj"
             }
           }
         }

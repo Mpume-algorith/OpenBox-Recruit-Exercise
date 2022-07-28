@@ -38,11 +38,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj",
+      "projectUniqueName": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj",
       "projectName": "GraduateRecruitment.ConsoleApp",
-      "projectPath": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj",
+      "projectPath": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\GraduateRecruitment.ConsoleApp.csproj",
       "packagesPath": "C:\\Users\\mpumelelotsotsa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mpumelelotsotsa\\Downloads\\GraduateRecruitment-master (1)\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\obj\\",
+      "outputPath": "C:\\Users\\mpumelelotsotsa\\source\\repos\\OpenBox-Recruit-Exercise\\GraduateRecruitment-master\\GraduateRecruitment.ConsoleApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\mpumelelotsotsa\\AppData\\Roaming\\NuGet\\NuGet.Config",

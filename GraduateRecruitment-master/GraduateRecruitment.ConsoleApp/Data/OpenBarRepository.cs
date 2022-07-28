@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using GraduateRecruitment.ConsoleApp.Data.Entities;
+using GraduateRecruitment.ConsoleApp.ViewModels;
 using GraduateRecruitment.ConsoleApp.Data.Models;
 using LumenWorks.Framework.IO.Csv;
 
@@ -20,6 +21,45 @@ namespace GraduateRecruitment.ConsoleApp.Data
         public IList<FridgeStockTake> AllFridgeStocks { get; private set; } = new List<FridgeStockTake>();
         public IList<Inventory> AllInventory { get; private set; } = new List<Inventory>();
 
+        #region Solutions 
+        public List<QuantityByInventory> QuantByInventoryWed()
+        {
+            List<QuantityByInventory> quantByInv = new List<QuantityByInventory>();
+
+            var StockTakeJoinOpenBar = (from item1 in _fridgeStockDto
+                                        join item2 in _openBarRecordsDto on
+                                        item1.OpenBarRecordId equals item2.Id
+                                        select new
+                                        {
+                                            Id = item1.InventoryId,
+                                            Quantity = item1.Quantity.Taken,
+                                            Day = item2.Date.DayOfWeek
+                                        });
+            var StockByWednesday = (from item in StockTakeJoinOpenBar
+                                    where item.Day.Equals(DayOfWeek.Wednesday)
+                                    select item);
+            var StockByWedJoinInventory = (from item1 in _inventoryDto
+                                           join item2 in StockByWednesday
+                                           on item1.Id equals item2.Id
+                                           group item2 by item1.Name into g
+                                           orderby g.Sum(x => x.Quantity) descending
+                                           select new QuantityByInventory
+                                           {
+                                               InventoryName = g.Key,
+                                               QuantityTaken = g.Sum(x => x.Quantity)
+                                           }).Take(1).ToList();
+
+            foreach (var item in StockByWedJoinInventory)
+            {
+                QuantityByInventory obj = new QuantityByInventory();
+                obj.InventoryName = item.InventoryName;
+                obj.QuantityTaken = item.QuantityTaken;
+                quantByInv.Add(obj);
+            }
+
+            return quantByInv;
+        }
+        #endregion
         public OpenBarRepository()
         {
             _openBarRecordsDto = GetOpenBarRecordData();
