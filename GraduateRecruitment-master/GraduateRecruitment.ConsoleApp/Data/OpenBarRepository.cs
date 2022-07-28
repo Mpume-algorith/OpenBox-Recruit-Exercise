@@ -103,6 +103,139 @@ namespace GraduateRecruitment.ConsoleApp.Data
             }
             return inventoryByDay;
         }
+
+        public List<InventoryRunningOut> SavannaRunOutDate()
+        {
+            List<InventoryRunningOut> date = new List<InventoryRunningOut>();
+            var savanna = (from item in _fridgeStockDto
+                           where item.InventoryId == 1
+                           select new InventoryRunningOut
+                           {
+                               OpenBarID = item.OpenBarRecordId,
+                               Id = item.InventoryId,
+                               QuantityAdded = item.Quantity.Added,
+                               QuantityTaken = item.Quantity.Taken,
+
+                           });
+            //here we select the OpenBarId where the sum taken is equal to sum added 
+            int sumTaken = 0;
+            int sumAdded = 0;
+
+            IList<InventoryRunningOut> OpenBarIdList = new List<InventoryRunningOut>();
+            foreach (var item in savanna)
+
+            {
+                sumTaken = sumTaken + item.QuantityTaken;
+                sumAdded = sumAdded + item.QuantityAdded;
+
+                if (sumTaken == sumAdded)
+                {
+                    InventoryRunningOut obj = new InventoryRunningOut();
+                    obj.OpenBarID = item.OpenBarID;
+                    OpenBarIdList.Add(obj);
+                }
+
+            }
+
+            var OpenBarDate = (from item1 in _openBarRecordsDto
+                               join item2 in OpenBarIdList
+                               on item1.Id equals item2.OpenBarID
+                               let lastMonth = DateTime.Parse("2022/03/31")
+                               where item1.Date > lastMonth
+                               select new InventoryRunningOut
+                               {
+                                   OpenBarID = item1.Id,
+                                   DateString = item1.Date.ToString("yyyy/MM/dd")
+                               }).ToList();
+
+
+            foreach (var item in OpenBarDate)
+            {
+                InventoryRunningOut obj = new InventoryRunningOut();
+                obj.OpenBarID = item.OpenBarID;
+                obj.DateString = item.DateString;
+
+                date.Add(obj);
+            }
+
+            return date;
+        }
+
+        public List<InventoryRunningOut> FantaOrangeOrder()
+        {
+            List<InventoryRunningOut> fantaList = new List<InventoryRunningOut>();
+
+            var fantaFilter = (from item1 in _fridgeStockDto
+                               join item2 in _openBarRecordsDto
+                               on item1.OpenBarRecordId equals item2.Id
+                               where item1.InventoryId == 7 && item2.Date > DateTime.Parse("2021/12/31")
+
+                               select new InventoryRunningOut
+                               {
+                                   DateString = item2.Date.ToString("yyyy/MMMM/dd"),
+                                   Id = item1.InventoryId,
+                                   QuantityTaken = item1.Quantity.Taken,
+                                   QuantityAdded = item1.Quantity.Added,
+                                   Day = item2.Date.DayOfWeek
+
+                               }).ToList();
+            foreach (var item in fantaFilter)
+            {
+                InventoryRunningOut obj = new InventoryRunningOut();
+                obj.DateString = item.DateString;
+                //obj.Id = item.Id;
+                obj.QuantityTaken = item.QuantityTaken;
+                obj.QuantityAdded = item.QuantityAdded;
+                obj.Day = item.Day;
+                fantaList.Add(obj);
+            }
+
+            return fantaList;
+        }
+        public double InventoryUageRate()
+        {
+            /* with this method I wnt to determine the inventory usage, 
+             * devide according to the time frame and use it to 
+             * predict the order schedule for any timeframe
+             */
+
+            var fantaFilter = (from item1 in _fridgeStockDto
+                               join item2 in _openBarRecordsDto
+                               on item1.OpenBarRecordId equals item2.Id
+                               where item1.InventoryId == 7
+
+                               select new InventoryRunningOut
+                               {
+                                   Date = item2.Date,
+                                   Id = item1.InventoryId,
+                                   QuantityTaken = item1.Quantity.Taken,
+                                   QuantityAdded = item1.Quantity.Added,
+
+
+                               }).ToList();
+
+
+            //int sumAdded = 0;
+            int sumTaken = 0;
+            //int openingInventory = 0;
+            foreach (var item in fantaFilter)
+            {
+                //sumAdded = sumAdded + item.QuantityAdded;
+                sumTaken = sumTaken + item.QuantityTaken;
+            }
+            //openingInventory = sumAdded - sumTaken;
+            //int receivedInventory = fantaFilter.Select(x => x.QuantityAdded).Sum();
+            int usedInventory = fantaFilter.Select(x => x.QuantityTaken).Sum();
+            //usage rate for Fanta Orange per month in 2022
+            int usageRate = usedInventory / 62;
+
+
+
+
+
+            return usageRate;
+
+        }
         #endregion
         public OpenBarRepository()
         {

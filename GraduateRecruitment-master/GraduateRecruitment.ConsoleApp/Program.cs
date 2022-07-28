@@ -54,7 +54,10 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question3(OpenBarRepository repo)
         {
             Console.WriteLine("Question 3: Which dates did we run out of Savanna Dry for the last recorded month?");
-
+            foreach (var item in repo.SavannaRunOutDate())
+            {
+                Console.WriteLine(item.OpenBarID + ": " + item.DateString);
+            }
             // Write your answer to the console here.
             // Format e.g.  {year}/{month}/{day}
         }
@@ -62,7 +65,11 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question4(OpenBarRepository repo)
         {
             Console.WriteLine("Question 4: How many Fanta Oranges do we need to order next week?");
-
+            foreach (var item in repo.FantaOrangeOrder())
+            {
+                Console.WriteLine(item.DateString + ": " + item.QuantityTaken + ": " + item.QuantityAdded + ": " + item.Day);
+            }
+            Console.WriteLine("Inventory Usage: " + repo.InventoryUageRate());
             // Write your answer to the console here.
             // Format e.g.  {quanity}
         }
