@@ -59,6 +59,50 @@ namespace GraduateRecruitment.ConsoleApp.Data
 
             return quantByInv;
         }
+
+        public List<QuantityByInventory> QuantityByInventoryByDay()
+        {
+            List<QuantityByInventory> inventoryByDay = new List<QuantityByInventory>();
+            var StockTakeJoinOpenBar = (from item1 in _fridgeStockDto
+                                        join item2 in _openBarRecordsDto on
+                                        item1.OpenBarRecordId equals item2.Id
+                                        select new
+                                        {
+                                            Id = item1.InventoryId,
+                                            Quantity = item1.Quantity.Taken,
+                                            Day = item2.Date.DayOfWeek
+                                        });
+            var StockNameByDay = (from item1 in _inventoryDto
+                                  join item2 in StockTakeJoinOpenBar
+                                  on item1.Id equals item2.Id
+                                  group item2 by new { item2.Day, item1.Name } into g
+                                  //orderby g.Sum(x => x.Quantity) descending
+                                  select new QuantityByInventory
+                                  {
+                                      InventoryName = g.Key.Name,
+                                      DayOfWeek = g.Key.Day,
+                                      QuantityTaken = g.Sum(x => x.Quantity)
+
+                                  }).ToList();
+            var StockMaxByDay = (from item in StockNameByDay
+                                 group item by item.DayOfWeek into g
+                                 let maxSum = g.Max(x => x.QuantityTaken)
+                                 select new QuantityByInventory
+                                 {
+                                     InventoryName = g.First(y => y.QuantityTaken == maxSum).InventoryName,
+                                     DayOfWeek = g.Key,
+                                     QuantityTaken = maxSum
+                                 }).ToList();
+            foreach (var item in StockMaxByDay)
+            {
+                QuantityByInventory obj = new QuantityByInventory();
+                obj.InventoryName = item.InventoryName;
+                obj.DayOfWeek = item.DayOfWeek;
+                obj.QuantityTaken = item.QuantityTaken;
+                inventoryByDay.Add(obj);
+            }
+            return inventoryByDay;
+        }
         #endregion
         public OpenBarRepository()
         {

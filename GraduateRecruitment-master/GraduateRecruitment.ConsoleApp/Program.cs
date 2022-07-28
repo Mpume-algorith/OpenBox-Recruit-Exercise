@@ -42,7 +42,10 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question2(OpenBarRepository repo)
         {
             Console.WriteLine("Question 2: What is the most popular drink, including the quantities, per day?");
-
+            foreach (var item in repo.QuantityByInventoryByDay())
+            {
+                Console.WriteLine(item.DayOfWeek + ": " + item.InventoryName + ": " + item.QuantityTaken);
+            }
             // Write your answer to the console here.
             // Format e.g.  {day of week}
             //              {inventory name}: {quantity}
