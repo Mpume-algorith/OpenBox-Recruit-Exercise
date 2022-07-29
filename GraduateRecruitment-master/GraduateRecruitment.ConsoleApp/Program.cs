@@ -90,7 +90,10 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question7(OpenBarRepository repo)
         {
             Console.WriteLine("Question 7: We're planning a braai and expecting 100 people, how many of each drink should we order based on historical popularity of drinks?");
-
+            Console.WriteLine(repo.PopularDrinks());
+            Console.WriteLine();
+            Console.WriteLine("Total Number of People: " + repo.TotalSumOFPeople());
+            Console.WriteLine("Drinks for guests: "+ repo.ScaledDownDrinks());
             // Write your answer to the console here.
             // Format e.g.  {inventory name}: {quantity}
         }

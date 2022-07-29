@@ -311,6 +311,57 @@ namespace GraduateRecruitment.ConsoleApp.Data
             return averageMonthlyBudget;
         }
 
+        public string PopularDrinks()
+        {
+            //IList<QuantityByInventory> drinks = new List<QuantityByInventory>();
+            var quantByInventory = (from item1 in _fridgeStockDto
+                                    join item2 in _inventoryDto
+                                    on item1.InventoryId equals item2.Id
+                                    group item1 by item2.Name into g
+                                    orderby g.Sum(x => x.Quantity.Taken)
+                                    select new QuantityByInventory
+                                    {
+                                        InventoryName = g.Key,
+                                        QuantityTaken = g.Sum(x => x.Quantity.Taken)
+                                    });
+            int totalnumberOfDrinks = quantByInventory.Select(x => x.QuantityTaken).Sum();
+            string listOfSum = "";
+            foreach (var item in quantByInventory)
+            {
+                var num = item.QuantityTaken;
+                listOfSum = listOfSum + item.QuantityTaken.ToString() + ":";
+            }
+            var sumArray = listOfSum.Split(":");
+            double proportionA = Math.Round(Convert.ToDouble(sumArray[0]) / totalnumberOfDrinks, 4);
+            double proportionB = Math.Round(Convert.ToDouble(sumArray[1]) / totalnumberOfDrinks, 4);
+            double proportionC = Math.Round(Convert.ToDouble(sumArray[2]) / totalnumberOfDrinks, 4);
+            double proportionD = Math.Round(Convert.ToDouble(sumArray[3]) / totalnumberOfDrinks, 4);
+            double proportionE = Math.Round(Convert.ToDouble(sumArray[4]) / totalnumberOfDrinks, 4);
+            double proportionF = Math.Round(Convert.ToDouble(sumArray[5]) / totalnumberOfDrinks, 4);
+            double proportionG = Math.Round(Convert.ToDouble(sumArray[6]) / totalnumberOfDrinks, 4);
+            double proportionH = Math.Round(Convert.ToDouble(sumArray[7]) / totalnumberOfDrinks, 4);
+            double proportionI = Math.Round(Convert.ToDouble(sumArray[8]) / totalnumberOfDrinks, 4);
+            double proportionJ = Math.Round(Convert.ToDouble(sumArray[9]) / totalnumberOfDrinks, 4);
+
+            return string.Format("{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}:{8}:{9}", proportionA, proportionB, proportionC, proportionD, proportionE, proportionF, proportionG, proportionH, proportionI, proportionJ);
+            //return totalnumberOfDrinks.ToString();
+            //return listOfSum;
+        }
+        public int TotalSumOfQunatityTaken()
+        {
+            int numberOfDrinks = _fridgeStockDto.Select(x => x.Quantity.Taken).Sum();
+            return numberOfDrinks;
+        }
+        public double ScaledDownDrinks()
+        {
+            double drinksForQuests = Math.Round(TotalSumOfQunatityTaken() / 115.23, 0);
+            return drinksForQuests;
+        }
+        public int TotalSumOFPeople()
+        {
+            int numberOfPeople = _openBarRecordsDto.Sum(x => x.NumberOfPeopleInBar);
+            return numberOfPeople;
+        }
         #endregion
         public OpenBarRepository()
         {
