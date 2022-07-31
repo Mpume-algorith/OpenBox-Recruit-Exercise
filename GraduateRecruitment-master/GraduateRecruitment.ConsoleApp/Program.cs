@@ -31,7 +31,10 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question1(OpenBarRepository repo)
         {
             Console.WriteLine("Question 1: What is the most popular drink, including the quantity, on a Wednesday?");
-
+            foreach (var item in repo.QuantByInventoryWed())
+            {
+                Console.WriteLine(item.InventoryName + ": " + item.QuantityTaken);
+            }
             // Write your answer to the console here.
             // Format e.g.  {inventory name}: {quantity}
         }
@@ -39,7 +42,11 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question2(OpenBarRepository repo)
         {
             Console.WriteLine("Question 2: What is the most popular drink, including the quantities, per day?");
-
+            foreach (var item in repo.QuantityByInventoryByDay())
+            {
+                Console.WriteLine(item.DayOfWeek);
+                Console.WriteLine(item.InventoryName + ": " + item.QuantityTaken);
+            }
             // Write your answer to the console here.
             // Format e.g.  {day of week}
             //              {inventory name}: {quantity}
@@ -48,7 +55,10 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question3(OpenBarRepository repo)
         {
             Console.WriteLine("Question 3: Which dates did we run out of Savanna Dry for the last recorded month?");
-
+            foreach (var item in repo.SavannaRunOutDate())
+            {
+                Console.WriteLine(item.DateString); 
+            }
             // Write your answer to the console here.
             // Format e.g.  {year}/{month}/{day}
         }
@@ -56,7 +66,8 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question4(OpenBarRepository repo)
         {
             Console.WriteLine("Question 4: How many Fanta Oranges do we need to order next week?");
-
+            
+            Console.WriteLine(repo.WeeklyInventoryUageRate());
             // Write your answer to the console here.
             // Format e.g.  {quanity}
         }
@@ -64,7 +75,7 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question5(OpenBarRepository repo)
         {
             Console.WriteLine("Question 5: How much do we need to budget next month for Ceres Orange Juice?");
-
+            Console.WriteLine(repo.CeresOrangeBudget());
             // Write your answer to the console here.
             // Format e.g.  R{amount}
         }
@@ -72,7 +83,7 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question6(OpenBarRepository repo)
         {
             Console.WriteLine("Question 6: How much do we need to budget for next month to restock the fridge?");
-
+            Console.WriteLine(repo.MonthlyRestockBudget());
             // Write your answer to the console here.
             // Format e.g.  R{amount}
         }
@@ -80,7 +91,11 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question7(OpenBarRepository repo)
         {
             Console.WriteLine("Question 7: We're planning a braai and expecting 100 people, how many of each drink should we order based on historical popularity of drinks?");
-
+            
+            foreach(var item in repo.RatioOfDrinksForGuests())
+            {
+                Console.WriteLine(item.Name + ": " + item.DrinkProportion);
+            }
             // Write your answer to the console here.
             // Format e.g.  {inventory name}: {quantity}
         }
