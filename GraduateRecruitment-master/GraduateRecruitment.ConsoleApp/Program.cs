@@ -44,7 +44,8 @@ namespace GraduateRecruitment.ConsoleApp
             Console.WriteLine("Question 2: What is the most popular drink, including the quantities, per day?");
             foreach (var item in repo.QuantityByInventoryByDay())
             {
-                Console.WriteLine(item.DayOfWeek + ": " + item.InventoryName + ": " + item.QuantityTaken);
+                Console.WriteLine(item.DayOfWeek);
+                Console.WriteLine(item.InventoryName + ": " + item.QuantityTaken);
             }
             // Write your answer to the console here.
             // Format e.g.  {day of week}
@@ -56,7 +57,7 @@ namespace GraduateRecruitment.ConsoleApp
             Console.WriteLine("Question 3: Which dates did we run out of Savanna Dry for the last recorded month?");
             foreach (var item in repo.SavannaRunOutDate())
             {
-                Console.WriteLine(item.OpenBarID + ": " + item.DateString);
+                Console.WriteLine(item.DateString); 
             }
             // Write your answer to the console here.
             // Format e.g.  {year}/{month}/{day}
@@ -66,7 +67,7 @@ namespace GraduateRecruitment.ConsoleApp
         {
             Console.WriteLine("Question 4: How many Fanta Oranges do we need to order next week?");
             
-            Console.WriteLine("Inventory Usage: " + repo.InventoryUageRate());
+            Console.WriteLine(repo.WeeklyInventoryUageRate());
             // Write your answer to the console here.
             // Format e.g.  {quanity}
         }
@@ -90,10 +91,11 @@ namespace GraduateRecruitment.ConsoleApp
         private static void Question7(OpenBarRepository repo)
         {
             Console.WriteLine("Question 7: We're planning a braai and expecting 100 people, how many of each drink should we order based on historical popularity of drinks?");
-            Console.WriteLine(repo.PopularDrinks());
-            Console.WriteLine();
-            Console.WriteLine("Total Number of People: " + repo.TotalSumOFPeople());
-            Console.WriteLine("Drinks for guests: "+ repo.ScaledDownDrinks());
+            
+            foreach(var item in repo.RatioOfDrinksForGuests())
+            {
+                Console.WriteLine(item.Name + ": " + item.DrinkProportion);
+            }
             // Write your answer to the console here.
             // Format e.g.  {inventory name}: {quantity}
         }

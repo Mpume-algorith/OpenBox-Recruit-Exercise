@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Threading;
 using System.IO;
 using System.Linq;
 using GraduateRecruitment.ConsoleApp.Data.Entities;
 using GraduateRecruitment.ConsoleApp.ViewModels;
 using GraduateRecruitment.ConsoleApp.Data.Models;
+using GraduateRecruitment.ConsoleApp.Extensions;
 using LumenWorks.Framework.IO.Csv;
 
 namespace GraduateRecruitment.ConsoleApp.Data
@@ -76,7 +78,6 @@ namespace GraduateRecruitment.ConsoleApp.Data
                                   join item2 in StockTakeJoinOpenBar
                                   on item1.Id equals item2.Id
                                   group item2 by new { item2.Day, item1.Name } into g
-                                  //orderby g.Sum(x => x.Quantity) descending
                                   select new QuantityByInventory
                                   {
                                       InventoryName = g.Key.Name,
@@ -136,19 +137,25 @@ namespace GraduateRecruitment.ConsoleApp.Data
                 }
 
             }
-
+            var monthlist = (from item in _openBarRecordsDto
+                             let year = item.Date.ToString("yyyy")
+                             let month = item.Date.ToString("MM")
+                             group item by new { year, month } into g
+                             select new InventoryRunningOut
+                             {
+                                 DateString = g.Key.year,
+                                 DateStringMonth = g.Key.month
+                             }).ToList();
+            string m = monthlist[monthlist.Count - 1].DateStringMonth;
+            string y = monthlist[monthlist.Count - 1].DateString;
             var OpenBarDate = (from item1 in _openBarRecordsDto
                                join item2 in OpenBarIdList
                                on item1.Id equals item2.OpenBarID
-                               let lastMonth = DateTime.Parse("2022/03/31")
-                               where item1.Date > lastMonth
+                               where item1.Date.ToString("MM").Equals(m) && item1.Date.ToString("yyyy").Equals(y)
                                select new InventoryRunningOut
                                {
-                                   OpenBarID = item1.Id,
                                    DateString = item1.Date.ToString("yyyy/MM/dd")
                                }).ToList();
-
-
             foreach (var item in OpenBarDate)
             {
                 InventoryRunningOut obj = new InventoryRunningOut();
@@ -157,7 +164,7 @@ namespace GraduateRecruitment.ConsoleApp.Data
 
                 date.Add(obj);
             }
-
+            
             return date;
         }
 
@@ -183,7 +190,6 @@ namespace GraduateRecruitment.ConsoleApp.Data
             {
                 InventoryRunningOut obj = new InventoryRunningOut();
                 obj.DateString = item.DateString;
-                //obj.Id = item.Id;
                 obj.QuantityTaken = item.QuantityTaken;
                 obj.QuantityAdded = item.QuantityAdded;
                 obj.Day = item.Day;
@@ -192,7 +198,7 @@ namespace GraduateRecruitment.ConsoleApp.Data
 
             return fantaList;
         }
-        public double InventoryUageRate()
+        public double WeeklyInventoryUageRate()
         {
             /* with this method I wnt to determine the inventory usage, 
              * devide according to the time frame and use it to 
@@ -214,24 +220,13 @@ namespace GraduateRecruitment.ConsoleApp.Data
 
                                }).ToList();
 
-
-            //int sumAdded = 0;
             int sumTaken = 0;
-            //int openingInventory = 0;
             foreach (var item in fantaFilter)
             {
-                //sumAdded = sumAdded + item.QuantityAdded;
                 sumTaken = sumTaken + item.QuantityTaken;
             }
-            //openingInventory = sumAdded - sumTaken;
-            //int receivedInventory = fantaFilter.Select(x => x.QuantityAdded).Sum();
             int usedInventory = fantaFilter.Select(x => x.QuantityTaken).Sum();
-            //usage rate for Fanta Orange per month in 2022
             int usageRate = usedInventory / 62;
-
-
-
-
 
             return usageRate;
 
@@ -273,16 +268,18 @@ namespace GraduateRecruitment.ConsoleApp.Data
             return list;
 
         }
-        public decimal CeresOrangeBudget()
+        public string CeresOrangeBudget()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-ZA");
             double consumptionAverage = SumByDrinkNamePerMonth(9).Average(x => x.QuantityTaken);
             decimal priceOfJuice = GetInventory(9).Price;
             decimal monthlyBudget = Convert.ToDecimal(consumptionAverage) * priceOfJuice;
 
-            return monthlyBudget;
+            return monthlyBudget.ToString("C");
         }
-        public decimal MonthlyRestockBudget()
+        public string MonthlyRestockBudget()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-ZA");
             decimal consumptionAverage1 = Convert.ToDecimal(SumByDrinkNamePerMonth(1).Average(x => x.QuantityTaken));
 
             decimal consumptionAverage2 = Convert.ToDecimal(SumByDrinkNamePerMonth(2).Average(x => x.QuantityTaken));
@@ -308,12 +305,12 @@ namespace GraduateRecruitment.ConsoleApp.Data
             decimal averageMonthlyBudget = (consumptionAverage1 * price1) + (consumptionAverage2 * price2) + (consumptionAverage3 * price3) + (consumptionAverage4 * price4) + (consumptionAverage5 * price5) + (consumptionAverage6 * price6) + (consumptionAverage7 * price7) + (consumptionAverage8 * price8) + (consumptionAverage9 * price9) + (consumptionAverage10 * price10);
 
 
-            return averageMonthlyBudget;
+            return averageMonthlyBudget.ToString("C");
         }
 
-        public string PopularDrinks()
+        public IList<GuestDrinkProportion> RatioOfDrinksForGuests()
         {
-            //IList<QuantityByInventory> drinks = new List<QuantityByInventory>();
+            IList<GuestDrinkProportion> list = new List<GuestDrinkProportion>();
             var quantByInventory = (from item1 in _fridgeStockDto
                                     join item2 in _inventoryDto
                                     on item1.InventoryId equals item2.Id
@@ -324,43 +321,46 @@ namespace GraduateRecruitment.ConsoleApp.Data
                                         InventoryName = g.Key,
                                         QuantityTaken = g.Sum(x => x.Quantity.Taken)
                                     });
-            int totalnumberOfDrinks = quantByInventory.Select(x => x.QuantityTaken).Sum();
-            string listOfSum = "";
+            decimal totalnumberOfDrinks = quantByInventory.Select(x => x.QuantityTaken).Sum();
             foreach (var item in quantByInventory)
             {
-                var num = item.QuantityTaken;
-                listOfSum = listOfSum + item.QuantityTaken.ToString() + ":";
+                GuestDrinkProportion obj = new GuestDrinkProportion();
+                
+                obj.Name = item.InventoryName;
+                obj.DrinkProportion = DecimalExtensions.RoundToInt((item.QuantityTaken) / totalnumberOfDrinks * ScaledDownDrinks());
+                list.Add(obj);
             }
-            var sumArray = listOfSum.Split(":");
-            double proportionA = Math.Round(Convert.ToDouble(sumArray[0]) / totalnumberOfDrinks, 4);
-            double proportionB = Math.Round(Convert.ToDouble(sumArray[1]) / totalnumberOfDrinks, 4);
-            double proportionC = Math.Round(Convert.ToDouble(sumArray[2]) / totalnumberOfDrinks, 4);
-            double proportionD = Math.Round(Convert.ToDouble(sumArray[3]) / totalnumberOfDrinks, 4);
-            double proportionE = Math.Round(Convert.ToDouble(sumArray[4]) / totalnumberOfDrinks, 4);
-            double proportionF = Math.Round(Convert.ToDouble(sumArray[5]) / totalnumberOfDrinks, 4);
-            double proportionG = Math.Round(Convert.ToDouble(sumArray[6]) / totalnumberOfDrinks, 4);
-            double proportionH = Math.Round(Convert.ToDouble(sumArray[7]) / totalnumberOfDrinks, 4);
-            double proportionI = Math.Round(Convert.ToDouble(sumArray[8]) / totalnumberOfDrinks, 4);
-            double proportionJ = Math.Round(Convert.ToDouble(sumArray[9]) / totalnumberOfDrinks, 4);
-
-            return string.Format("{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}:{8}:{9}", proportionA, proportionB, proportionC, proportionD, proportionE, proportionF, proportionG, proportionH, proportionI, proportionJ);
-            //return totalnumberOfDrinks.ToString();
-            //return listOfSum;
+            return list;
+            
         }
         public int TotalSumOfQunatityTaken()
         {
             int numberOfDrinks = _fridgeStockDto.Select(x => x.Quantity.Taken).Sum();
             return numberOfDrinks;
         }
-        public double ScaledDownDrinks()
+        public decimal ScaledDownDrinks()
         {
-            double drinksForQuests = Math.Round(TotalSumOfQunatityTaken() / 115.23, 0);
-            return drinksForQuests;
+            /* Total sum of people in bar is 11523
+             * To scale down this number to 100 people, we devide by 115.23
+             * Therefore we take this factor and doo the same with total sum of drinks
+             * To scale them down for 100 people
+             */
+            decimal drinksForOnehundredQuests = (TotalSumOfQunatityTaken() / ScaleDownFactor(100));
+            return drinksForOnehundredQuests;
+        }
+
+        /*A tool to determine the factor in which to scale down the totsl
+         */
+        public decimal ScaleDownFactor(int numberOFGuests)
+        {
+            
+            return TotalSumOFPeople() / numberOFGuests;
         }
         public int TotalSumOFPeople()
         {
+            
             int numberOfPeople = _openBarRecordsDto.Sum(x => x.NumberOfPeopleInBar);
-            return numberOfPeople;
+            return numberOfPeople; 
         }
         #endregion
         public OpenBarRepository()

@@ -9,5 +9,6 @@ namespace GraduateRecruitment.UnitTests
     [TestFixture]
     public class ConsoleAppTests
     {
+
     }
 }
